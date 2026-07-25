@@ -8,13 +8,32 @@ import {
   ChevronUp,
 } from "lucide-react";
 
+type ChatHistory = {
+  _id: string;
+  title: string;
+  updatedAt: string;
+};
+
 type SidebarProps = {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  newChat: () => void;
+
+  chats: ChatHistory[];
+  openChat: (id: string) => void;
+
+  activeChatId: string | null;
 };
 
-function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
-  const [showHistory, setShowHistory] = useState(false);
+function Sidebar({
+  collapsed,
+  setCollapsed,
+  newChat,
+  chats,
+  openChat,
+  activeChatId,
+}: SidebarProps) {
+  const [showHistory, setShowHistory] = useState(true);
 
   return (
     <aside className={collapsed ? "collapsed" : ""}>
@@ -29,7 +48,10 @@ function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {!collapsed && <h2>OmniVerse AI</h2>}
       </div>
 
-      <button className="new-chat-btn">
+      <button
+        className="new-chat-btn"
+        onClick={newChat}
+      >
         <Plus size={18} />
         {!collapsed && <span>New Chat</span>}
       </button>
@@ -37,11 +59,10 @@ function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
       {!collapsed && (
         <>
           <button
-            className="history-btn"
+            className="history-btn recent-chat-item"
             onClick={() => setShowHistory(!showHistory)}
           >
             <MessageSquare size={18} />
-
             <span>Recent Chats</span>
 
             {showHistory ? (
@@ -52,10 +73,25 @@ function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           </button>
 
           {showHistory && (
-            <ul>
-              <li>AI Project</li>
-              <li>React Help</li>
-              <li>Scholarship</li>
+            <ul className="chat-history">
+              {chats.length === 0 ? (
+                <li>No chats yet</li>
+              ) : (
+                chats.map((chat) => (
+                  <li
+                    key={chat._id}
+                    onClick={() => openChat(chat._id)}
+                    className={
+                      activeChatId === chat._id
+                        ? "active-chat"
+                        : ""
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    {chat.title}
+                  </li>
+                ))
+              )}
             </ul>
           )}
         </>
