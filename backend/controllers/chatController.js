@@ -125,7 +125,8 @@ OmniVerse AI is a personal AI project created and developed by Mude Angad to pro
   });
 
 }
-const currentDateTime = new Date().toLocaleString("en-US", {
+const currentDateTime = new Date().toLocaleString("en-IN", {
+  timeZone: "Asia/Kolkata",
   weekday: "long",
   year: "numeric",
   month: "long",
